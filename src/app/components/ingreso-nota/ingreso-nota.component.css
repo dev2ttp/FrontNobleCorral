@@ -1,0 +1,54 @@
+footer{
+    height: 280px;
+}
+
+footer img {
+    width: 100%;
+}
+
+.centrar-teclado{
+    text-align: -webkit-center;
+}
+
+.caja-botones{
+    display: flex;
+    width: 70%;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2%;
+}
+
+.boton{
+    width: 5%;
+    margin-left: 2.5%;
+    margin-top: 4.5%;
+    margin-right: 2.5%;
+}
+
+.contenido-boton{
+    background-color: white;
+    color: #70451c;
+    font-size: 5em;
+    font-weight: 600;
+    padding-top: 30%;
+    padding-bottom: 30%;
+    border: 6px solid #70451c;
+    border-radius: 8%;
+    width: 95px;
+}
+
+.button-borrar{
+    font-size: 4em;
+    padding-top: 0%;
+    padding-bottom: 0%;
+    height: 100% !important;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.button-borrar div i{
+    color: #70451c !important;
+    font-size: 0.8em;
+}

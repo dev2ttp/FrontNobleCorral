@@ -1,0 +1,31 @@
+footer{
+    height: 280px;
+}
+
+footer img {
+    width: 100%;
+}
+
+.nota-venta-detalle h1{
+    font-family: "bebasneue";
+}
+
+.boton{
+    font-size: 3rem;
+    background-color: #7d4311;
+    height: 100px;
+    color: #f9edcb;
+    border: 1px solid #3b281a;
+    border-radius: 21px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.descripcion{
+    margin-top: 6%;
+    font-size: 3rem;
+    color: #7d4311;
+    font-weight: 600;
+    text-align: initial;
+}

@@ -1,4 +1,74 @@
-<main role="main" class="container-fluid">
+<div class="row text-center">
+  <div class="col-12">
+    <img src="assets/images/noblecorral/Header-interior.jpg">
+  </div>
+  <div class="col-12 pt-0">
+    <img src="assets/images/noblecorral/fondo-interior.jpg">
+  </div>
+  <div class="col-10 offset-1 pl-5 nota-venta-detalle">
+    <div class="row">
+      <div class="col-12">
+        <h1>Nº Nota de Venta</h1>
+        <hr class="mt-0">
+      </div>
+      <div class="col-12">
+        <span class="display-2"> {{ItemArrayC.correlativo}}</span>
+        <hr class="mt-2">
+      </div>
+      <div class="col-12 box-table">
+        <table>
+          <tbody class="w-100">
+            <tr *ngFor="let item of ItemsArray; index as i; last as last">
+              <td class="w-75 text-left">
+                <img src="assets/images/noblecorral/meet.png"> {{item.producto}}
+              </td>
+              <td class="text-right" style="width: 215px;">
+                ${{item.totalProd | number}}
+              </td>
+              <td style="width: 80px;"><a data-toggle="modal" data-target="#exampleModal"><i
+                    class="fas fa-times red"></i></a></td>
+            </tr>
+            <!-- <tr>
+              <td class="w-75 text-left" disabled>
+                <img src="assets/images/noblecorral/meet.png"> Aletilla TRADICIÓN
+              </td>
+              <td class="text-right" style="width: 215px;">
+                $9.990
+              </td>
+              <td><a data-toggle="modal" data-target="#exampleModal"><i class="fas fa-check green"></i></a></td>
+            </tr> -->
+
+
+          </tbody>
+        </table>
+      </div>
+      <div class="col-12">
+        <div class="d-flex justify-content-between"><h1>Impuestos</h1><h1>${{Impuestos | number}}</h1></div> 
+      </div>
+
+      <div class="col-12">
+        <hr class="mt-2">
+        <h1>TOTAL</h1>
+        <span class="display-2"> ${{ItemArrayC.total | number}}</span>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <img src="assets/images/noblecorral/Footer-interior.jpg">
+  <div class="row botonera w-100 pl-4">
+    <div class="col-6 text-center">
+      <button routerLink=""><img src="assets/images/noblecorral/Boton-salir.png"></button>
+    </div>
+    <div class="col-6 text-center">
+      <button routerLink="/tipoDocumento"><img src="assets/images/noblecorral/Continuar.png"></button>
+    </div>
+  </div>
+</footer>
+<!-- <main role="main" class="container-fluid"> 
   <div class="row text-center">
       <div class="col-12">
           <div class="tittle">
@@ -53,14 +123,14 @@
             </thead>
             <tbody>
               <tr *ngFor="let det of ItemsArray">
-                <!--th scope="row">{{det.producto}} [(ngModel)]="isChecked"</th-->
+                <!--th scope="row">{{det.producto}} [(ngModel)]="isChecked"</th
                 <input type="checkbox" class="form-control" [value]="det.totalProd" (change)="onCheckboxChange($event)"/>
                 <td>{{det.producto}}</td>
                 <td>{{det.cantidad}}</td>
                 <td>{{det['totalProd']}}</td>
                 <!--td>
                   <img src="assets/img/{{postre.img}}" width="30px" class="img-fluid" alt="{{postre.nombre}}">
-                </td-->
+                </td
               </tr>
             </tbody>
           </table>
@@ -81,3 +151,4 @@
 </main>
 <footer>
 </footer>
+-->

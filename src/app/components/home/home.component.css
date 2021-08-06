@@ -1,0 +1,25 @@
+.boton1{
+    height: 100px;
+    width: 100px;
+    background-color: transparent;
+    position: absolute;
+    top: 95%;
+}
+
+.boton2{
+    height: 100px;
+    width: 100px;
+    background-color: transparent;
+    position: absolute;
+    top: 95%;
+    right: 0;
+}
+
+.boton3{
+    height: 200px;
+    width: 200px;
+    background-color: transparent;
+    position: absolute;
+    top: 0%;
+    left: 41%;
+}

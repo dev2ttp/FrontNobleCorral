@@ -54,7 +54,7 @@ export class PagoComponent implements OnInit {
   async inicioPago() {
     var version = await this.PagoService.InicioVersion();
     this.sweetAlertService.swalLoading("Iniciando");
-    var response = await this.PagoService.iniciarPago(this.pago.montoAPagar);
+    var response = await this.PagoService.iniciarPago(this.pago.montoAPagar,"");
     Swal.close();
     console.log("estadoInicio: " + JSON.stringify(response));
     if (response['bloqueoEfectivo']) {

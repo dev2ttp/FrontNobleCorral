@@ -16,6 +16,6 @@ export class TipoPagoComponent implements OnInit {
     this.taskTypeOptions = Object.keys(this.taskTypes);
   }
   tipoDoc(){
-    console.log("sel"+ this.seleccionado)
+    console.log("sel", this.seleccionado)
   }
 }

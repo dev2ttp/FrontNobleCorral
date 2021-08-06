@@ -18,7 +18,7 @@ export class SweetAlertService {
       icon: 'success',
       title: message,
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3200,
     });
   }
   swalWarning(message: string): void {
@@ -32,7 +32,7 @@ export class SweetAlertService {
   swalErrorM(message: string): void {
     Swal.fire({
       icon: 'error',
-      title: 'Ups...',
+      title: 'Error',
       text: message,
       //confirmButtonColor: '#36ABAC',
       timer: 5000,
@@ -150,9 +150,9 @@ export class SweetAlertService {
       icon: 'warning',
       title: 'Desea continuar!',
       html: 'La operacion se cancelara en <b></b> milisegundos.',
-      timer: 5000,
+      timer: 9000,
       showCancelButton: false,
-      confirmButtonColor: '#007bff',
+      confirmButtonColor: '#fff',
       cancelButtonColor: '#E06162',
       cancelButtonText: 'Cancelar',
       confirmButtonText: 'Si, continuar',

@@ -1,0 +1,16 @@
+footer{
+    height: 280px;
+}
+
+footer img {
+    width: 100%;
+}
+
+.nota-venta-detalle h1{
+    font-family: "bebasneue";
+}
+
+.box-table {
+    height: 740px;
+    overflow-y: auto;
+}

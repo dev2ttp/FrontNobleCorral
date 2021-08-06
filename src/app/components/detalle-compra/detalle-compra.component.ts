@@ -14,7 +14,9 @@ export class DetalleCompraComponent implements OnInit {
   
   ItemArrayC;
   ItemsArray;
+  Impuestos:number;
   frmDetalle: FormGroup;
+  DataCongf;
 
   notaV: NotaVenta = {
     notaVenta: '',
@@ -30,18 +32,29 @@ export class DetalleCompraComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.Impuestos = 0;
     this.getDetalle();
+    this.Configuracion();
+  }
+
+  async Configuracion() {
+    var response = await this.serviceXmlService.getJSON();  
+    console.log(response);
+    this.DataCongf = response;
   }
 
   async getDetalle(){
     var response = JSON.parse(localStorage.getItem("detalle"));
     console.log("response" + JSON.stringify(response));
+    console.log(response);
     
     response['dataD'].forEach(element => {
       element.cantidad = element.cantidad.split('.')[0];
-      element.totalProd = element.totalProd.split('.')[0];
+      element.totalProd = Number.parseFloat(element.totalProd);
+      this.Impuestos +=  Number.parseFloat(element.impuesto);
     });  
     this.ItemArrayC = response['dataC'];
+    this.ItemArrayC["total"] = Number.parseFloat(this.ItemArrayC["total"]);
     this.notaV.cliente = this.ItemArrayC['cliente']; 
     this.notaV.fecha = this.ItemArrayC['fecha'];
     this.notaV.montoTotal = 0;//this.ItemArrayC['total'].split('.')[0];

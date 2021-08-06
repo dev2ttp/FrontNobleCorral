@@ -1,0 +1,16 @@
+{
+   "Tiempos": {
+      "VueltaPatanallaAnterior": "10000",
+      "ConsultarEstadoSald": "20"
+   },
+   "APIurl": {
+      "APIPago": "http://localhost/ApiPago/api",
+      "APINobleCorral": "http://localhost:61609/api/",
+      "APItbk": "http://localhost/ApiPago/api"
+   },
+   "DatosEmpresa": {
+    "tipoDoctoPagoF": "FACTURA VTA TOTEM(E)",
+    "tipoDoctoPagoB": "BOLETA VTA TOTEM(E)",
+    "Empresa": "010"
+ }
+}

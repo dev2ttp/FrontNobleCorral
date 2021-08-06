@@ -9,19 +9,26 @@ export class PagoServiceService {
   headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
 
   status: string;
+  config;
 
   constructor(private http: HttpClient) {
-    //this.apiUrl= 'https://172.16.33.121/api/Pago';
-    //this.apiUrl = 'http://172.16.33.121:59579/api/Pago';
-    this.apiUrl = 'http://localhost:59579/api/Pago';
+    this.ngOnInit();
+  }
+
+  async  ngOnInit() {
+    this.config = await this.getJSON();
+    console.log(this.config);
+
+    this.apiUrl = this.config.APIurl.APIPago;
   }
   async InicioVersion() {
     try {
       var version = {
-        "APP":"APP_EFE",
-        "Version":"1.1.0"
+        "app":"APP_EFE",
+        "version":"1.1.0"
       }; 
-        return await this.http.post("http://localhost:59579/api/Version/InicioVersion",version, { headers: this.headers }).toPromise()
+      var urlc = this.apiUrl.replace("pago","Version")
+        return await this.http.post(`${urlc}/InicioVersion`,version, { headers: this.headers }).toPromise()
     } catch (error) {
       let resultado =
       {
@@ -32,11 +39,30 @@ export class PagoServiceService {
       return resultado;
     }
   }
-  async iniciarPago(req) {
+
+  async  getJSON() {
+    try {
+      return await this.http.get("./assets/cnfg.json", { headers: this.headers }
+      ).toPromise();
+    } catch (error) {
+      let resultado =
+      {
+        'status': false,
+        'data': 'error al ejeceutar petición',
+        'codeStatus': error.status
+      };
+      return resultado;
+    }
+  }
+
+  async iniciarPago(req,cliente) {
     try {
       var request = {
-        "MontoApagar": req
+        "MontoApagar": req,
+        "rut":cliente
       };
+      console.log(request);
+      
       return await this.http.post(`${this.apiUrl}/IniciarPago`, request, { headers: this.headers }).toPromise()
 
     } catch (error) {

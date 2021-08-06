@@ -1,9 +1,114 @@
+<div class="row text-center">
+    <div class="col-12">
+        <img src="assets/images/noblecorral/Header-interior.jpg">
+    </div>
+    <div class="col-12 pt-0">
+        <img src="assets/images/noblecorral/fondo-interior.jpg">
+    </div>
+    <div class="col-10 offset-1 pl-5 nota-venta-detalle">
+        <div class="row">
+
+            <div class="col-12" *ngIf="PagoInicio == true">
+                <span class="display-3">PAGO EFECTIVO</span>
+                <hr class="mt-2">
+            </div>
+            <!-- Mientras pago -->
+            <div class="col-12" *ngIf="PagoInicio == true">
+                <h1>Favor Insertar monedas o billetes</h1>
+            </div>
+            <div class="col-8 offset-2 mt-5 pt-5 mb-5" *ngIf="PagoInicio == true">
+                <h2>MONTO A CANCELAR</h2>
+                <span class="display-3 line-height">${{pago.montoAPagar}}</span>
+            </div>
+            <div class="col-8 offset-2 mt-5 " *ngIf="PagoInicio == true">
+                <span class="display-4">MONTO INGRESADO</span>
+                <span class="display-1">
+                    ${{pago.dineroIngresado}}
+                </span>
+            </div>
+            <div class="col-12 pt-5" *ngIf="PagoInicio == true">
+                <hr class="mt-5">
+            </div>
+            <div class="col-8 offset-2 mt-5" *ngIf="PagoInicio == true">
+
+                <span class="display-3 line-height">siga las instrucciones
+                    en pantalla</span>
+
+            </div>
+            <!-- Mientras pago -->
+
+            <!-- PAGO FALLIDO -->
+            <div class="col-4 offset-4 mt-5 pt-5" *ngIf="Pagoefallido == true">
+                <img src="assets/images/noblecorral/fail.png">
+            </div>
+            <div class="col-12 mt-5" *ngIf="Pagoefallido == true">
+                <span class="display-2">PAGO FALLIDO</span>
+                <h1 class="line-height">favor intentar nuevamente</h1>
+            </div>
+            <!-- PAGO FALLIDO -->
+
+
+            <!-- PAgo exitoso -->
+            <div class="col-4 offset-4 mt-5 pt-5" *ngIf="PagoeExitoso == true">
+                <img src="assets/images/noblecorral/check.png">
+            </div>
+            <div class="col-12 mt-5" *ngIf="PagoeExitoso == true">
+             <span class="display-2">PAGO EXITOSO</span>
+          
+            </div>
+            <div class="col-8 offset-2 mt-5 pt-5" *ngIf="PagoeExitoso == true">
+                <img src="assets/images/noblecorral/ticket.gif">
+                <h1 class="mt-3">RETIRE SU VUELTO</h1>
+            </div>
+            <!-- PAgo exitoso -->
+
+            <!-- Retire su comprobante -->
+            <div class="col-4 offset-4 mt-5 pt-5" *ngIf="PagoeRetireRecivo == true">
+                <img src="assets/images/noblecorral/icon-voucher.png">
+            </div>
+            <div class="col-12 mt-5" *ngIf="PagoeRetireRecivo == true">
+             <span class="display-3">Favor retire su comprobante
+                 y diríjase a empaque</span>
+          
+            </div>
+            <div class="col-8 offset-2 mt-5 pt-5" *ngIf="PagoeRetireRecivo == true">
+                <img src="assets/images/noblecorral/ticket.gif">
+            </div>
+            <!-- Retire su comprobante -->
+
+            <!-- Muhas gracias  -->
+            <div class="col-4 offset-4 mt-5 pt-5" *ngIf="PagoeMuchasGracias == true">
+                <img src="assets/images/noblecorral/check.png" class="mt-5 pt-5">
+            </div>
+            <div class="col-12 mt-5" *ngIf="PagoeMuchasGracias == true">
+             <span class="display-2">MUCHAS GRACIAS<BR>POR SU COMPRA</span>
+            </div>
+            <!-- Muhas gracias  -->
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <img src="assets/images/noblecorral/Footer-interior.jpg">
+    <div class="row botonera w-100 pl-4">
+        <div class="col-6 text-center" [hidden]="PagoeRetireRecivo == true || PagoeMuchasGracias == true || PagoeExitoso == true" >
+            <button routerLink="/tipoPago"><img
+                    src="assets/images/noblecorral/Volver.png"></button>
+        </div>
+        <!-- <div class="col-6 text-center">
+            <button><img src="assets/images/noblecorral/Continuar.png"></button>
+        </div> -->
+    </div>
+
+</footer>
+
 <!--<form name="fTP" id="fTP">
         <input type="hidden" id="Status" name="Status" [value]="StatusFront">
         <input type="hidden" id="Codigo" name="Codigo" [value]="CodigoFront">
         <input type="hidden" id="Datos" name="Datos" [value]="DatosFront">
     </form> -->
-<div class="container" style="margin-top: 21%; margin-left: 23% !important;">
+<!-- <div class="container" style="margin-top: 21%; margin-left: 23% !important;">
     <div *ngIf="flagPago" class="row">
         <div class="col-4 col-sm-6">
             <h1>Valor a pagar:</h1>
@@ -13,8 +118,8 @@
                 <span class="badge badge-primary">${{pago.montoAPagar}}</span>
             </h1>
         </div>
-        <!-- Force next columns to break to new line --> 
-        <div class="w-100"></div>
+        <!-- Force next columns to break to new line -->
+<!-- <div class="w-100"></div>
         <div class="col-6 col-sm-6">
             <h1>Dinero ingresado:</h1>
         </div>
@@ -46,9 +151,9 @@
             <h1>
                 <span class="badge badge-primary">${{vuelto.DineroRegresado}}</span>
             </h1>
-        </div>
-        <!-- Force next columns to break to new line -->
-        <div class="w-100"></div>
+        </div> -->
+<!-- Force next columns to break to new line -->
+<!-- <div class="w-100"></div>
         <div class="col-6 col-sm-6">
             <h1>Dinero por entregar:</h1>
         </div>
@@ -63,4 +168,4 @@
             Cancelar
         </button> 
     </div>
-</div>
+</div> -->

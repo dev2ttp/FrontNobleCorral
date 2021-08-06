@@ -23,6 +23,13 @@ import { MAT_KEYBOARD_LAYOUTS } from '@ngx-material-keyboard/core';
 import { customMaterialKeyboard } from './custom/keyboard';
 import { DetalleCompraComponent } from './components/detalle-compra/detalle-compra.component';
 import { TipoPagoComponent } from './components/tipo-pago/tipo-pago.component';
+import { TipoDocumentoComponent } from './components/tipo-documento/tipo-documento.component';
+import { PagoDebitoComponent } from './components/pago-debito/pago-debito.component';
+import { PagoCreditoComponent } from './components/pago-credito/pago-credito.component';
+
+//TBK Service
+import { PagoTBKService } from './services/PagoTBK/pago-tbk.service';
+import { TBKComponent } from './components/TBK/tbk/tbk.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +43,10 @@ import { TipoPagoComponent } from './components/tipo-pago/tipo-pago.component';
     IngresoNotaComponent,
     DetalleCompraComponent,
     TipoPagoComponent,
+    TipoDocumentoComponent,
+    PagoDebitoComponent,
+    PagoCreditoComponent,
+    TBKComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +65,7 @@ import { TipoPagoComponent } from './components/tipo-pago/tipo-pago.component';
   ],
   providers: [
     PagoServiceService,
+    PagoTBKService,
     { provide: MAT_KEYBOARD_LAYOUTS, useValue: customMaterialKeyboard }
   ],
   bootstrap: [AppComponent]

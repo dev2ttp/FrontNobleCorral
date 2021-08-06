@@ -1,42 +1,81 @@
-<main role="main" class="container-fluid">
-    <div class="row text-center">
-        <div class="col-12">
-            <div class="tittle">
-                <img src="assets/images/title.png" class="mt-4">
-                <span class="titulo  ml-5 pl-5 mt-n2">Ingrese nota de venta</span>
-            </div>
-        </div> 
+<div class="row text-center">
+    <div class="col-12">
+        <img src="assets/images/noblecorral//Header-interior.jpg">
     </div>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <div class="row text-center ">
-            <div class="col-12 pt-5">
-                <hr>
+    <div class="col-12 pt-0">
+        <img src="assets/images/noblecorral//fondo-interior-nota.jpg">
+    </div>
+    <div class="col-10 offset-1 pl-5 nota-venta">
+        <div class="row">
+            <div class="col-12">
+                <h1>BIENVENIDO</h1>
             </div>
-            <div class="col-4 br-solid">
-                <a href="#">
-                    <img src="assets/images/Imagen2.png">
-                </a>
+            <div class="col-12">
+                <h3> INGRESE N° NOTA DE VENTA</h3>
             </div>
-            
-            <div class="form-row col-8">
-                <div class="form-group">
-                    <h1 class="cafe">Nota de venta</h1>
-                    <input [matKeyboard]="'numeric'" type="text" formControlName="notaVenta" class="form-control shadow input-a" [ngClass]="{ 'is-invalid': submitted && f.notaVenta.errors }" [(ngModel)]="notaVenta"/>
-                    <div *ngIf="submitted && f.notaVenta.errors" class="invalid-feedback">
-                        <div *ngIf="f.notaVenta.errors.required">La nota de venta es requerida</div>                        
+            <div class="col-12">
+                <div class="input-group mt-1">
+                    <input type="text" class="form-control search " id="CodigoBarra" placeholder="Ingrese número de boleta" [(ngModel)]="notaVenta">
+                    <div class="input-group-append">
+                        <button class="btn btn-search " type="button" (click)="getNotaVenta()">
+                            <i class="fa fa-search"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 pt-5">
-                <hr>
+            <div class="col-12 centrar-teclado" >
+                <!-- Teclado -->
+                <div class="caja-botones">
+                    <div class=" boton" *ngFor="let number of numberbutton; index as i; last as last">
+                        <div *ngIf="!last && i!=10" class="contenido-boton text-center animated bounceIn" (click)="setnota(i)">
+                            {{number}}</div>
+                        <div *ngIf="last" class="contenido-boton text-center button-borrar bgi-del"
+                            (click)="borar()"><div><i class="fas fa-backspace"></i></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row botonera">
-            <div class="col-6  offset-md-6 text-center">
-                <button class="btn-next">ACEPTAR</button>
-            </div>
-        </div>
-    </form>
-</main>
+    </div>
+
+</div>
+
 <footer>
+    <img src="assets/images/noblecorral/Footer-interior.jpg">
+    <div class="row botonera w-100 pl-4">
+        <div class="col-12 text-center">
+            <button routerLink=""><img src="assets/images/noblecorral//Boton-salir.png"></button>
+        </div>
+    </div>
 </footer>
+
+<!-- <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="row text-center ">
+        <div class="col-12 pt-5">
+            <hr>
+        </div>
+        <div class="col-4 br-solid">
+            <a href="#">
+                <img src="assets/images/Imagen2.png">
+            </a>
+        </div>
+        
+        <div class="form-row col-8">
+            <div class="form-group">
+                <h1 class="cafe">Nota de venta</h1>
+                <input [matKeyboard]="'numeric'" type="text" formControlName="notaVenta" class="form-control shadow input-a" [ngClass]="{ 'is-invalid': submitted && f.notaVenta.errors }" [(ngModel)]="notaVenta"/>
+                <div *ngIf="submitted && f.notaVenta.errors" class="invalid-feedback">
+                    <div *ngIf="f.notaVenta.errors.required">La nota de venta es requerida</div>                        
+                </div>
+            </div>
+        </div>
+        <div class="col-12 pt-5">
+            <hr>
+        </div>
+    </div>
+    <div class="row botonera">
+        <div class="col-6  offset-md-6 text-center">
+            <button class="btn-next">ACEPTAR</button>
+        </div>
+    </div>
+</form> -->

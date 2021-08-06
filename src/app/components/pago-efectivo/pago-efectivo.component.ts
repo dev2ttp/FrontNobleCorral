@@ -8,6 +8,8 @@ import { SweetAlertService } from '../../services/sweet-alert/sweet-alert.servic
 import { NgxToastrService } from '../../services/ngx-toastr/ngx-toastr.service';
 import Swal from 'sweetalert2';
 import { ActivatedRoute } from '@angular/router';
+import { NotaVenta } from "../../models/notaVenta/notaVenta";
+import { ServiceXmlService } from "../../services/xmlService/service-xml.service";
 
 @Component({
   selector: 'app-pago-efectivo',
@@ -35,6 +37,20 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
   flagDetenerVuelto: boolean = false;
   flagPagocan: boolean = false;
 
+  subConsultaEST: Subscription;
+  flagMensajeEST: boolean = false;
+  flagMensajeFloat: boolean = false;
+
+  //Datos de nota de venta
+  ItemArrayC;
+  notaV: NotaVenta = {
+    notaVenta: '',
+    cliente: '',
+    fecha:'',
+    montoTotal: 0
+  };
+  ItemsArray;
+
   pago: Pago = {
     montoAPagar: 0,
     dineroIngresado: 0,
@@ -48,14 +64,125 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
     VueltoFinalizado: false
   };
 
-  constructor(private PagoService: PagoServiceService, private router: Router, private sweetAlertService: SweetAlertService, private ngxToastrService: NgxToastrService,private route: ActivatedRoute) {
+  //Datos de estdos e pago
+
+  PagoInicio:boolean
+  Pagoefallido:boolean;
+  PagoeExitoso:boolean;
+  PagoeRetireRecivo:boolean;
+  PagoeMuchasGracias:boolean;
+
+  response:any;
+  notaventa;
+  respuestaTBK:any;
+  DataCongf;
+  tipoDoc;
+
+  constructor(private serviceXmlService:ServiceXmlService, private PagoService: PagoServiceService, private router: Router, private sweetAlertService: SweetAlertService, private ngxToastrService: NgxToastrService,private route: ActivatedRoute) {
   }
-  ngOnInit() {
+  async ngOnInit() {
     //this.pago.montoAPagar = (Math.round(Math.floor(Math.random() * (2000 - 100)) + 100))*10;
     //this.pago.montoAPagar = 2000//(Math.round(Math.floor(Math.random() * (10 - 1)) + 1)) * 2000
-    this.pago.montoAPagar = 1500
-    this.estadoDinero()
+    //this.pago.montoAPagar = 1500
+    // this.estadoDinero()
+    //this.sweetAlertService.swalSuccess("Ingrese dinero");
+    this.PagoInicio = true;
+    this.Pagoefallido = false;
+    this.PagoeExitoso = false;
+    this.PagoeRetireRecivo = false;
+    this.PagoeMuchasGracias = false;
+
+    this.response = JSON.parse(localStorage.getItem("detalle"));
+    this.notaventa = JSON.parse(localStorage.getItem("Notaventa"));
+    this.tipoDoc = localStorage.getItem("TipoDocumento");
+    await this.Configuracion();
+    this.getDetalle();
+    
   }
+
+  async Configuracion() {
+    var response = await this.serviceXmlService.getJSON();  
+    await this.serviceXmlService.getJSON();
+    console.log(response);
+    this.DataCongf = response;
+  }
+  
+  async getDetalle(){
+    var response = JSON.parse(localStorage.getItem("detalle"));
+    console.log("response" + JSON.stringify(response));
+    
+    response['dataD'].forEach(element => {
+      element.cantidad = element.cantidad.split('.')[0];
+      element.totalProd = element.totalProd.split('.')[0];
+    });  
+    this.ItemArrayC = response['dataC'];
+    this.notaV.cliente = this.ItemArrayC['cliente']; 
+    this.notaV.fecha = this.ItemArrayC['fecha'];
+    this.notaV.montoTotal = 0;//this.ItemArrayC['total'].split('.')[0];
+    this.ItemsArray =  response['dataD'];   
+    this.pago.montoAPagar = Number.parseInt(this.ItemArrayC.total);
+    this.InicioMaquinas();
+  }
+
+  async InicioMaquinas(){    
+    var response = await this.PagoService.estadSalud();
+    console.log("estado salud:" + JSON.stringify(response));
+    if (response['statusMaquina'].floating) {
+      if (!this.flagMensajeFloat) {
+        this.sweetAlertService.CalcularOperacion("Por favor espere unos segundos");
+        this.flagMensajeFloat = true;
+      }
+    }
+    else {
+      if (this.flagMensajeFloat) {
+        Swal.close();
+      }
+      this.flagMensajeFloat = false;
+      if (this.subConsultaEST) this.subConsultaEST.unsubscribe();
+      this.inicioPago();
+    }
+  }
+  async inicioPago() {
+    var version = await this.PagoService.InicioVersion();
+    this.sweetAlertService.swalLoading("Iniciando");
+    var response = await this.PagoService.iniciarPago(this.pago.montoAPagar,this.notaV.cliente);
+    Swal.close();
+    console.log("estadoInicio: " + JSON.stringify(response));
+    if (response['bloqueoEfectivo']) {
+      this.PagoService.finalizarPago();
+      this.flagMensajeEST = true;
+      this.sweetAlertService.CalcularOperacion("Temporalmente fuera de servicio");
+      this.pagofallido();
+      setTimeout( () => {
+      }, 6000 );
+    }
+    else {
+      if (response['status']) {
+        if (response['statusMaquina'] == false && response['nivelBloqueo'] == true) {
+          this.sweetAlertService.swalErrorM(response['mensajeAmostrar']);
+          this.pagofallido();
+        }
+        else if (response['statusMaquina'] == false && response['nivelBloqueo'] == false) {
+          this.ngxToastrService.warn(response['mensajeAmostrar']);
+          this.estadoDinero()
+          //this.router.navigate(['/efectivo']);
+        }
+        else {
+          this.estadoDinero()
+          //this.router.navigate(['/efectivo']);
+          this.sweetAlertService.swalSuccess("Ingrese dinero");
+        }
+      }
+      else {
+        this.sweetAlertService.swalErrorM("No tenemos vuelto");
+        this.pagofallido();
+        setTimeout( () => {
+        }, 6000 );
+        this.router.navigate(['/tipoPago']); 
+      }
+    }
+  }
+
   async estadoDinero() {
     try {
       var response = await this.PagoService.detallesPago2(this.pago.montoAPagar)
@@ -64,8 +191,9 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
         if (response['status']) {
           if (response['bloqueoEfectivo'] && this.flagConsultaEST == false) {
             this.flagConsultaEST = true;
+            this.pagofallido();
             this.cancelarOp();
-            this.router.navigate(['/pago']);
+            this.router.navigate(['']);
             //this.subEstDinero.unsubscribe();
           }
           if (response['pagoStatus'] == false) {
@@ -101,7 +229,8 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
             }
           }
           else if (!this.flagEstPago) {
-            this.router.navigate(['/pago']);
+            //this.router.navigate(['']);
+            this.pagoexitoso();
             this.sweetAlertService.swalSuccess("Pago realizado, imprimiendo ticket")
             this.flagEstPago = true;
             //this.subEstDinero.unsubscribe();
@@ -111,6 +240,7 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
         }
         else if (response['status'] == false && this.flagEstPago == false) {
           this.sweetAlertService.swalWarning("Ha ocurrido un problema, intentelo nuevamente");
+          this.pagofallido();
           this.cancelarOp();
         }      
     } catch (error) {
@@ -126,7 +256,8 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
           if (response['bloqueoEfectivo'] && this.flagConsultaEST == false) {
             this.flagConsultaEST = true;
             this.detenerVuelto();
-            this.router.navigate(['/pago']);
+            this.router.navigate(['']);
+            this.pagofallido();
             //this.subStdVuelto.unsubscribe();
           }
           if (response['pagoStatus'] == false) {
@@ -154,7 +285,8 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
             }         
           }
           else if (!this.flagEstVuelto || vueltoFinilazado == true) {
-            this.router.navigate(['/pago']);
+            //this.router.navigate(['']);
+            this.pagoexitoso();
             this.sweetAlertService.swalSuccess("Pago realizado, imprimiendo ticket")
             //this.subStdVuelto.unsubscribe();
             this.flagEstVuelto = true;
@@ -164,7 +296,7 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
         }
         else {
           this.sweetAlertService.swalError();
-          this.router.navigate(['/pago']);
+          this.router.navigate(['/tipoPago']);
           //this.subStdVuelto.unsubscribe();
         }
         if (vueltoFinilazado == false) {
@@ -178,6 +310,7 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
     try {
       this.flagPagocan = true;
       //this.subEstDinero.unsubscribe();
+      this.pagofallido();
       this.sweetAlertService.swalLoading("Cancelando operacion");
       var response = await this.PagoService.cancelarOp();
       if (response['status']) {
@@ -192,7 +325,7 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
       var response = await this.PagoService.estadoCancelacion();
       console.log("estadoCancelacionPago: " + JSON.stringify(response));
       if (response['cancelacionCompleta'] == true && response['entregandoVuelto'] == false) {
-        this.router.navigate(['/pago']);
+        this.router.navigate(['/tipoPago']);
         Swal.close();
         this.subCancelacion.unsubscribe();
       }
@@ -228,13 +361,70 @@ export class PagoEfectivoComponent implements OnInit, OnDestroy {
     this.subCancelacion = source.subscribe(val => this.estadoCancelacionPago());
   }
   timerOutPago() {
-    const source = interval(120000);
+    const source = interval(20000);
     this.subOutPago = source.subscribe(val => this.cancelaTimeOutPago());
   }
   timerDetenerVuelto() {
     const source = interval(60000);
     this.subDetenerVuelto = source.subscribe(val => this.detenerVuelto());
   }
+
+
+  //cambios de estado
+  pagofallido(){
+    this.PagoInicio = false;
+    this.Pagoefallido = true;
+    this.PagoeExitoso = false;
+    this.PagoeRetireRecivo = false;
+    this.PagoeMuchasGracias = false;
+  }
+
+  pagoexitoso(){
+    this.PagoInicio = false;
+    this.Pagoefallido = false;
+    this.PagoeExitoso = true;
+    this.PagoeRetireRecivo = false;
+    this.PagoeMuchasGracias = false;
+
+    var codpago = "CONTADO";
+
+
+    var inyeccion = {
+      "montoPago": this.ItemArrayC["total"].tostring(),
+      "tipoDoctoPago": this.tipoDoc  == "B"? this.DataCongf.DatosEmpresa.tipoDoctoPagoB:this.DataCongf.DatosEmpresa.tipoDoctoPagoF,
+      "montoIngreso": this.ItemArrayC["total"].tostring(),
+      "monto": this.ItemArrayC["total"].tostring(),
+      "codigoPago": codpago,
+      "correlativo":this.ItemArrayC["correlativo"],
+      "empresa": this.DataCongf.DatosEmpresa.Empresa,
+      "nroDoctoPago":  "0",
+      "nrodeCuotas": "0",
+      "montoCuotas": "0",
+      "tipoPago": "Efectivo",
+      "nroNotaVenta": this.notaventa
+    }
+    this.serviceXmlService.InyectarDocumento(inyeccion);
+    setTimeout(() => { this.Retirorecivo();}, 6000);
+  }
+
+  Retirorecivo(){
+    this.PagoInicio = false;
+    this.Pagoefallido = false;
+    this.PagoeExitoso = false;
+    this.PagoeRetireRecivo = true;
+    this.PagoeMuchasGracias = false;
+    setTimeout(() => { this.MuchasgraciasFin();}, 6000);
+  }
+
+  MuchasgraciasFin(){
+    this.PagoInicio = false;
+    this.Pagoefallido = false;
+    this.PagoeExitoso = false;
+    this.PagoeRetireRecivo = false;
+    this.PagoeMuchasGracias = true;
+    setTimeout(() => { this.router.navigate(['']);}, 6000);
+  }
+
   ngOnDestroy() {
     if (this.subOutPago) this.subOutPago.unsubscribe();
     if (this.subCancelacion) this.subCancelacion.unsubscribe();
